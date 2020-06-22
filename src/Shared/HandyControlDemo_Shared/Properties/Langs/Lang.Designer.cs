@@ -851,7 +851,18 @@ namespace HandyControlDemo.Properties.Langs {
                 return ResourceManager.GetString("ImageBrowser", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   查找类似 图片选择器 的本地化字符串。
+        /// </summary>
+        public static string ImageSelector
+        {
+            get
+            {
+                return ResourceManager.GetString("ImageSelector", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   查找类似 索引 的本地化字符串。
         /// </summary>
@@ -894,6 +905,15 @@ namespace HandyControlDemo.Properties.Langs {
         public static string Label {
             get {
                 return ResourceManager.GetString("Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 查找类似 {0} 的本地化字符串。 的本地化字符串。
+        /// </summary>
+        public static string LangComment {
+            get {
+                return ResourceManager.GetString("LangComment", resourceCulture);
             }
         }
         
@@ -1328,7 +1348,18 @@ namespace HandyControlDemo.Properties.Langs {
                 return ResourceManager.GetString("Project", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   查找类似 属性编辑器 的本地化字符串。
+        /// </summary>
+        public static string PropertyGrid
+        {
+            get
+            {
+                return ResourceManager.GetString("PropertyGrid", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   查找类似 按住说话 的本地化字符串。
         /// </summary>

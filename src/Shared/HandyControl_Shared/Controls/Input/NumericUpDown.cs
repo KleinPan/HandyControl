@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -74,7 +74,7 @@ namespace HandyControl.Controls
             if (_textBox != null)
             {
                 TextCompositionManager.RemovePreviewTextInputHandler(_textBox, PreviewTextInputHandler);
-                _textBox.TextChanged -= _textBox_TextChanged;
+                _textBox.TextChanged -= TextBox_TextChanged;
                 _textBox.PreviewKeyDown -= TextBox_PreviewKeyDown;
                 _textBox.LostFocus -= TextBox_LostFocus;
             }
@@ -87,18 +87,22 @@ namespace HandyControl.Controls
             if (_textBox != null)
             {
                 TextCompositionManager.AddPreviewTextInputHandler(_textBox, PreviewTextInputHandler);
-                _textBox.TextChanged += _textBox_TextChanged;
+                _textBox.TextChanged += TextBox_TextChanged;
                 _textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
                 _textBox.LostFocus += TextBox_LostFocus;
                 _textBox.Text = CurrentText;
             }
         }
 
-        private void _textBox_TextChanged(object sender, TextChangedEventArgs e) => UpdateData();
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e) => UpdateData();
 
         private void UpdateData()
         {
-            if (!VerifyData()) return;
+            if (!VerifyData())
+            {
+                _updateText = true;
+                return;
+            }
             if (double.TryParse(_textBox.Text, out var value))
             {
                 _updateText = false;
@@ -172,18 +176,23 @@ namespace HandyControl.Controls
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ctl = (NumericUpDown) d;
-            var v = (double) e.NewValue;
-            if (ctl._updateText && ctl._textBox != null)
-            {
-                ctl._textBox.Text = ctl.CurrentText;
-                ctl._textBox.Select(ctl._textBox.Text.Length, 0);
-            }
+            var ctl = (NumericUpDown)d;
+            var v = (double)e.NewValue;
+            ctl.SetText();
 
             ctl.OnValueChanged(new FunctionEventArgs<double>(ValueChangedEvent, ctl)
             {
                 Info = v
             });
+        }
+
+        private void SetText()
+        {
+            if (_updateText && _textBox != null)
+            {
+                _textBox.Text = CurrentText;
+                _textBox.Select(_textBox.Text.Length, 0);
+            }
         }
 
         private static object CoerceValue(DependencyObject d, object basevalue)
@@ -201,7 +210,7 @@ namespace HandyControl.Controls
             {
                 ctl.Value = maximum;
             }
-
+            ctl.SetText();
             return num > maximum ? maximum : num;
         }
 
@@ -210,7 +219,7 @@ namespace HandyControl.Controls
         /// </summary>
         public double Value
         {
-            get => (double) GetValue(ValueProperty);
+            get => (double)GetValue(ValueProperty);
             set => SetValue(ValueProperty, value);
         }
 
@@ -238,7 +247,7 @@ namespace HandyControl.Controls
         /// </summary>
         public double Maximum
         {
-            get => (double) GetValue(MaximumProperty);
+            get => (double)GetValue(MaximumProperty);
             set => SetValue(MaximumProperty, value);
         }
 
@@ -266,7 +275,7 @@ namespace HandyControl.Controls
         /// </summary>
         public double Minimum
         {
-            get => (double) GetValue(MinimumProperty);
+            get => (double)GetValue(MinimumProperty);
             set => SetValue(MinimumProperty, value);
         }
 
@@ -281,7 +290,7 @@ namespace HandyControl.Controls
         /// </summary>
         public double Increment
         {
-            get => (double) GetValue(IncrementProperty);
+            get => (double)GetValue(IncrementProperty);
             set => SetValue(IncrementProperty, value);
         }
 
@@ -296,7 +305,7 @@ namespace HandyControl.Controls
         /// </summary>
         public int? DecimalPlaces
         {
-            get => (int?) GetValue(DecimalPlacesProperty);
+            get => (int?)GetValue(DecimalPlacesProperty);
             set => SetValue(DecimalPlacesProperty, value);
         }
 
@@ -311,7 +320,7 @@ namespace HandyControl.Controls
         /// </summary>
         internal bool ShowUpDownButton
         {
-            get => (bool) GetValue(ShowUpDownButtonProperty);
+            get => (bool)GetValue(ShowUpDownButtonProperty);
             set => SetValue(ShowUpDownButtonProperty, value);
         }
 
@@ -323,7 +332,7 @@ namespace HandyControl.Controls
 
         public bool IsError
         {
-            get => (bool) GetValue(IsErrorProperty);
+            get => (bool)GetValue(IsErrorProperty);
             set => SetValue(IsErrorProperty, value);
         }
 
@@ -335,7 +344,7 @@ namespace HandyControl.Controls
 
         public string ErrorStr
         {
-            get => (string) GetValue(ErrorStrProperty);
+            get => (string)GetValue(ErrorStrProperty);
             set => SetValue(ErrorStrProperty, value);
         }
 
@@ -350,7 +359,7 @@ namespace HandyControl.Controls
 
         public TextType TextType
         {
-            get => (TextType) GetValue(TextTypeProperty);
+            get => (TextType)GetValue(TextTypeProperty);
             set => SetValue(TextTypeProperty, value);
         }
 
@@ -362,8 +371,8 @@ namespace HandyControl.Controls
 
         public bool ShowClearButton
         {
-            get => (bool) GetValue(ShowClearButtonProperty);
-            set => SetValue(ShowClearButtonProperty, value); 
+            get => (bool)GetValue(ShowClearButtonProperty);
+            set => SetValue(ShowClearButtonProperty, value);
         }
 
         /// <summary>
@@ -377,7 +386,7 @@ namespace HandyControl.Controls
         /// </summary>
         public bool IsReadOnly
         {
-            get => (bool) GetValue(IsReadOnlyProperty);
+            get => (bool)GetValue(IsReadOnlyProperty);
             set => SetValue(IsReadOnlyProperty, value);
         }
 
